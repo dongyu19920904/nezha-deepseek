@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek从入门到精通 - 哪吒教程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            300: '#f9a8d4',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            700: '#be185d',
+                            800: '#9d174d',
+                            900: '#831843',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+        
+        /* Smooth transitions for dark mode */
+        * {
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+        
+        /* Card hover effects */
+        .prompt-card {
+            transition: all 0.2s ease;
+        }
+        
+        .prompt-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .dark .prompt-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Button hover effects */
+        .btn {
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Fade in animation for sections */
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Code block styling */
+        .code-block {
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-sans">
+    <!-- Theme toggle button (fixed position) -->
+    <button id="theme-toggle" class="fixed z-50 bottom-6 right-6 p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-700/30 text-gray-800 dark:text-gray-200 focus:outline-none">
+        <i class="fas fa-moon dark:hidden"></i>
+        <i class="fas fa-sun hidden dark:block"></i>
+    </button>
+
+    <!-- Header with navigation -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-fire text-red-500 text-2xl"></i>
+                    <h1 class="text-xl font-bold">DeepSeek从入门到精通</h1>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#overview" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">概览</a>
+                    <a href="#prompts" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">提示词模板</a>
+                    <a href="#chapters" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">章节内容</a>
+                    <a href="#author" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">作者信息</a>
+                </nav>
+                <button id="mobile-menu-button" class="md:hidden text-gray-600 dark:text-gray-300 focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+            <div class="container mx-auto px-4 py-3 space-y-2">
+                <a href="#overview" class="block text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 py-2">概览</a>
+                <a href="#prompts" class="block text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 py-2">提示词模板</a>
+                <a href="#chapters" class="block text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 py-2">章节内容</a>
+                <a href="#author" class="block text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 py-2">作者信息</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero section -->
+    <section class="relative bg-gradient-to-br from-primary-600 to-secondary-600 text-white py-20 overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSI3NjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiIGlkPSJhIj48c3RvcCBzdG9wLWNvbG9yPSIjRkZGIiBzdG9wLW9wYWNpdHk9Ii4yIiBvZmZzZXQ9IjAlIi8+PHN0b3Agc3RvcC1jb2xvcj0iI0ZGRiIgc3RvcC1vcGFjaXR5PSIwIiBvZmZzZXQ9IjEwMCUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cGF0aCBkPSJNMTQ0MCA3NjBIMFYwczU3NC4xOSA0NjguMzYgODY4IDYyNGMyOTMuOCAxNTUuNjMgNTcyIDEzNiA1NzIgMTM2eiIgZmlsbD0idXJsKCNhKSIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9zdmc+')] opacity-20"></div>
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">DeepSeek从入门到精通</h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90">哪吒教你玩转AI提示词，让创作如火尖枪般锐利！</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#prompts" class="btn bg-white text-primary-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium shadow-lg">
+                        <i class="fas fa-bolt mr-2"></i>提示词模板
+                    </a>
+                    <a href="#chapters" class="btn bg-transparent border-2 border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg font-medium">
+                        <i class="fas fa-book mr-2"></i>章节内容
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview section -->
+    <section id="overview" class="py-16 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold mb-8 text-center">教程概览</h2>
+                <div class="prose dark:prose-invert max-w-none">
+                    <p class="text-lg mb-6">这份教程以生动活泼的"哪吒"主题，将DeepSeek AI的使用技巧融入到有趣的故事情境中。通过混天绫、火尖枪等哪吒元素的比喻，让复杂的AI提示词技巧变得简单易懂。</p>
+                    
+                    <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 mb-8">
+                        <h3 class="text-xl font-semibold mb-4">教程特点</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <span>创意提示词模板，即复制即用</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <span>生动有趣的比喻，让AI概念易于理解</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <span>实用场景案例，涵盖写作、营销、社交媒体等多个领域</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <span>结构化的提示词框架，提高AI输出质量</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row gap-6 mb-8">
+                        <div class="flex-1 bg-primary-50 dark:bg-gray-800 p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold mb-3 text-primary-700 dark:text-primary-400">适合人群</h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-center">
+                                    <i class="fas fa-user-graduate text-primary-600 dark:text-primary-400 mr-2"></i>
+                                    <span>AI初学者</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-pen-fancy text-primary-600 dark:text-primary-400 mr-2"></i>
+                                    <span>内容创作者</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-bullhorn text-primary-600 dark:text-primary-400 mr-2"></i>
+                                    <span>营销人员</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-store text-primary-600 dark:text-primary-400 mr-2"></i>
+                                    <span>小店主/创业者</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="flex-1 bg-secondary-50 dark:bg-gray-800 p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold mb-3 text-secondary-700 dark:text-secondary-400">学习收获</h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-center">
+                                    <i class="fas fa-brain text-secondary-600 dark:text-secondary-400 mr-2"></i>
+                                    <span>掌握AI提示词编写技巧</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-puzzle-piece text-secondary-600 dark:text-secondary-400 mr-2"></i>
+                                    <span>学会结构化思考问题</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-rocket text-secondary-600 dark:text-secondary-400 mr-2"></i>
+                                    <span>提高工作效率</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-lightbulb text-secondary-600 dark:text-secondary-400 mr-2"></i>
+                                    <span>激发创作灵感</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prompt templates section -->
+    <section id="prompts" class="py-16 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-12 text-center">提示词模板宝库</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Prompt card 1 -->
+                <div class="prompt-card bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <h3 class="ml-3 text-xl font-semibold">风格模仿写作</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">模仿特定风格创作宣传文案，融入指定元素和特点</p>
+                        <div class="code-block bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 text-sm font-mono relative">
+                            <button class="copy-btn p-1 rounded bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs">
+                                <i class="far fa-copy"></i>
+                            </button>
+<pre class="overflow-x-auto">帮我用[周杰伦]的风格写一段[奶茶店]的宣传语，要求：
+1. 模仿[周杰伦]的语言特点：
+   - 要有他标志性的[特点1]
+   - 要用他常用的[特点2]
+   - 要有他歌里常见的[特点3]
+2. 内容必须包含：
+   - [奶茶店]的[特色1]
+   - [奶茶店]的[特色2]
+   - 一个吸引人来的理由
+3. 字数控制在[XX]字以内
+4. 最后加一句朗朗上口的口号</pre>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">适用场景：营销文案、创意写作</span>
+                            <span class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs px-2 py-1 rounded">创意写作</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Prompt card 2 -->
+                <div class="prompt-card bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h3 class="ml-3 text-xl font-semibold">短视频脚本创作</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">创作结构完整、修辞丰富的短视频脚本</p>
+                        <div class="code-block bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 text-sm font-mono relative">
+                            <button class="copy-btn p-1 rounded bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs">
+                                <i class="far fa-copy"></i>
+                            </button>
+<pre class="overflow-x-auto">帮我写一个[短视频]脚本，主题是[主题]，要求：
+1. 用上这三种修辞手法：
+   - 比喻（至少3个新鲜的比喻）
+   - 拟人（让[物品]有人的特点）
+   - 排比（用3个相似结构的句子）
+2. 视频结构：
+   - 开头要在3秒内抓住人眼球
+   - 中间要有一个小反转
+   - 结尾要有记忆点
+3. 适合在[平台]发布
+4. 总时长控制在[XX]秒
+5. 配上3个表情符号增加趣味性</pre>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">适用场景：社交媒体、内容营销</span>
+                            <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs px-2 py-1 rounded">视频创作</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Prompt card 3 -->
+                <div class="prompt-card bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h3 class="ml-3 text-xl font-semibold">自问自答学习笔记</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">创建生动有趣的学习笔记，通过对话形式解释复杂概念</p>
+                        <div class="code-block bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 text-sm font-mono relative">
+                            <button class="copy-btn p-1 rounded bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs">
+                                <i class="far fa-copy"></i>
+                            </button>
+<pre class="overflow-x-auto">请帮我制作一份[学科]的学习笔记，主题是"[具体知识点]"，要求：
+1. 先用夹心饼干写法写一段知识点介绍：
+   - 正经介绍知识点
+   - 括号里加上通俗解释或记忆窍门
+2. 再用精分对话术设计一段问答：
+   - 角色A："困惑学生"（提出3个常见疑问）
+   - 角色B："耐心老师"（给出清晰解答）
+3. 最后用表格总结3个关键知识点和应用场景
+4. 整体风格要生动有趣，适合初学者理解</pre>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">适用场景：学习笔记、知识整理</span>
+                            <span class="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs px-2 py-1 rounded">教育学习</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Prompt card 4 -->
+                <div class="prompt-card bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h3 class="ml-3 text-xl font-semibold">电商产品描述</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">创作吸引人的电商产品描述，融合多种写作技巧</p>
+                        <div class="code-block bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 text-sm font-mono relative">
+                            <button class="copy-btn p-1 rounded bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs">
+                                <i class="far fa-copy"></i>
+                            </button>
+<pre class="overflow-x-auto">请帮我为[产品名称]写一份电商产品描述，要求综合使用三种技巧：
+1. 夹心饼干写法：
+   - 正经描述产品特点
+   - 括号里加上买家可能的真实想法
+2. 精分对话术：
+   - 角色A："犹豫的顾客"（提出3个常见顾虑）
+   - 角色B："经验丰富的用户"（分享使用体验）
+3. 游戏选择法：
+   - 设计2个使用场景的选择
+   - 每个选择展示不同的产品优势
+4. 总字数控制在[XX]字以内
+5. 语言要生动有趣，像朋友推荐一样</pre>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">适用场景：电商、产品营销</span>
+                            <span class="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs px-2 py-1 rounded">电商营销</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Prompt card 5 -->
+                <div class="prompt-card bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center text-yellow-600 dark:text-yellow-400">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <h3 class="ml-3 text-xl font-semibold">活动执行计划书</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">制定详细的活动执行计划，包含时间表、人员分工和应急预案</p>
+                        <div class="code-block bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 text-sm font-mono relative">
+                            <button class="copy-btn p-1 rounded bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs">
+                                <i class="far fa-copy"></i>
+                            </button>
+                            <pre class="overflow-x-auto">帮我为[活动名称]制定一个详细的执行计划，要求：
+                                1. 活动基本信息：
+                                   - 活动目的：[目的]
+                                   - 活动时间：[时间]
+                                   - 活动地点：[地点]
+                                   - 预计参与人数：[人数]
+                                2. 分阶段执行计划（用表格呈现）：
+                                   - 前期准备阶段（活动前2周）
+                                   - 活动执行阶段（活动当天）
+                                   - 后期总结阶段（活动后1周）
+                                3. 人员分工（至少包含4个角色）
+                                4. 预算规划（分类列出各项支出）
+                                5. 应急预案（至少考虑3种突发情况）
+                                6. 成功标准（如何评估活动效果）</pre>
+                                                        </div>
+                                                        <div class="flex justify-between items-center">
+                                                            <span class="text-xs text-gray-500 dark:text-gray-400">适用场景：活动策划、项目管理</span>
+                                                            <span class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 text-xs px-2 py-1 rounded">活动策划</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Prompt card 6 -->
+                                                <div class="prompt-card bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                                                    <div class="p-6">
+                                                        <div class="flex items-center mb-4">
+                                                            <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                                                <i class="fas fa-graduation-cap"></i>
+                                                            </div>
+                                                            <h3 class="ml-3 text-xl font-semibold">知识觉醒三连招</h3>
+                                                        </div>
+                                                        <p class="text-gray-600 dark:text-gray-400 mb-4">创新学习方法，将新知识与已有经验联系起来</p>
+                                                        <div class="code-block bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 text-sm font-mono relative">
+                                                            <button class="copy-btn p-1 rounded bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs">
+                                                                <i class="far fa-copy"></i>
+                                                            </button>
+                                <pre class="overflow-x-auto">【知识觉醒三连招】请帮我用创新方式学习[主题]：
+                                
+                                1. 回忆高光时刻（找到相似经验）：
+                                   - 请问我之前是否有过类似的学习经验：[描述你可能有的相关经验]
+                                   - 在那次经验中，我成功掌握了什么技能
+                                   - 当时是用了什么方法学会的
+                                   - 那次经验中最关键的突破点是什么
+                                
+                                2. 连接新招式（建立知识联系）：
+                                   - 请帮我找出[旧知识点]和[新知识点]之间的3个相似之处
+                                   - 解释如何把旧知识的学习方法应用到新知识上
+                                   - 设计一个练习，把两种知识结合起来
+                                   - 找出可能阻碍知识连接的"思维盲点"
+                                
+                                3. 创造必杀技（知识创新应用）：
+                                   - 基于前两步，创造一个独特的学习方法或记忆技巧
+                                   - 设计一个只有10分钟的"闪电学习"计划
+                                   - 提出一个创新的应用场景
+                                   - 给这个"必杀技"起个容易记住的名字
+                                
+                                请用生动有趣的语言回答，就像在教一个充满好奇心的孩子。</pre>
+                                                        </div>
+                                                        <div class="flex justify-between items-center">
+                                                            <span class="text-xs text-gray-500 dark:text-gray-400">适用场景：学习新技能、知识整合</span>
+                                                            <span class="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs px-2 py-1 rounded">学习方法</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mt-12 text-center">
+                                                <a href="#chapters" class="btn inline-flex items-center bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium shadow-lg">
+                                                    <i class="fas fa-book-open mr-2"></i>
+                                                    查看更多章节内容
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </section>
+                                
+                                    <!-- Chapters section -->
+                                    <section id="chapters" class="py-16 bg-white dark:bg-gray-900">
+                                        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                                            <h2 class="text-3xl font-bold mb-12 text-center">章节内容</h2>
+                                            
+                                            <div class="max-w-4xl mx-auto">
+                                                <!-- Chapter accordion -->
+                                                <div class="space-y-4">
+                                                    <!-- Chapter 1 -->
+                                                    <div class="chapter-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                                                        <button class="chapter-toggle w-full px-6 py-4 flex justify-between items-center focus:outline-none">
+                                                            <div class="flex items-center">
+                                                                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mr-4">
+                                                                    <span class="font-bold">1</span>
+                                                                </div>
+                                                                <h3 class="text-xl font-semibold">DeepSeek是啥来头？</h3>
+                                                            </div>
+                                                            <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                                                        </button>
+                                                        <div class="chapter-content hidden px-6 pb-6">
+                                                            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                                                <p class="mb-4">哪吒甩着混天绫："又是AI公司？说人话！"</p>
+                                                                <p class="mb-4">太乙真人掏乾坤圈："莫急嘛~好比你家楼下网吧最靓的机子：</p>
+                                                                <ul class="list-disc pl-6 mb-4 space-y-2">
+                                                                    <li>国产芯（竖起大拇指）</li>
+                                                                    <li>免费用（拍掉哪吒偷钱包的手）</li>
+                                                                    <li>开源的烤鸡翅秘方（哪吒眼睛一亮）</li>
+                                                                </ul>
+                                                                <p class="mb-4">"简单说就是——国产+免费+开源+能打！"</p>
+                                                                
+                                                                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mt-6">
+                                                                    <h4 class="font-semibold mb-2">这玩意儿能整啥活？</h4>
+                                                                    <p class="mb-2">哪吒踩风火轮转圈："能帮我写暑假作业不？"</p>
+                                                                    <ul class="list-disc pl-6 space-y-2">
+                                                                        <li>
+                                                                            <span class="font-medium">写小作文</span>
+                                                                            <ul class="list-disc pl-6 mt-1">
+                                                                                <li>生日请帖→烧烤派对邀请函</li>
+                                                                                <li>帮老妈编微商广告词</li>
+                                                                                <li>自动生成情书模板</li>
+                                                                            </ul>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="font-medium">解疑难杂症</span>
+                                                                            <ul class="list-disc pl-6 mt-1">
+                                                                                <li>分析游戏连败原因</li>
+                                                                                <li>算这个月零花钱够买几包辣条</li>
+                                                                                <li>识别女神朋友圈潜台词</li>
+                                                                            </ul>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="font-medium">编程黑科技</span>
+                                                                            <ul class="list-disc pl-6 mt-1">
+                                                                                <li>自动写《我的世界》模组代码</li>
+                                                                                <li>修复手游闪退bug</li>
+                                                                                <li>把作业本变成电子手账</li>
+                                                                            </ul>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Chapter 2 -->
+                                                    <div class="chapter-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                                                        <button class="chapter-toggle w-full px-6 py-4 flex justify-between items-center focus:outline-none">
+                                                            <div class="flex items-center">
+                                                                <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 mr-4">
+                                                                    <span class="font-bold">2</span>
+                                                                </div>
+                                                                <h3 class="text-xl font-semibold">AI脑瓜咋长的？</h3>
+                                                            </div>
+                                                            <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                                                        </button>
+                                                        <div class="chapter-content hidden px-6 pb-6">
+                                                            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                                                <p class="mb-4">哪吒："老头儿！DeepSeek-R1这货到底有啥能耐？"<br>
+                                                                太乙（骑猪转圈）："莫急嘛~好比班里那个闷头做题的全能课代表！"</p>
+                                                                
+                                                                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6">
+                                                                    <h4 class="font-semibold text-blue-700 dark:text-blue-400 mb-2">AI双修大法：</h4>
+                                                                    <h5 class="font-medium mb-1">全能模式（乾坤圈⭕蓄力中）：</h5>
+                                                                    <ul class="list-disc pl-6 mb-4 space-y-1">
+                                                                        <li>烧脑题照样刚：从算奶茶钱到破解女神朋友圈暗语</li>
+                                                                        <li>文案突然开窍：烧烤派对邀请函秒变武侠风请帖</li>
+                                                                        <li>绝活：想得深但憋得久（火尖枪"滋——"冒火星）</li>
+                                                                        <li>代表选手：DeepSeek-R1（国产之光！）</li>
+                                                                    </ul>
+                                                                </div>
+                                                                
+                                                                <p class="mb-4">哪吒："那它和别家妖艳贱货有啥不同？"<br>
+                                                                太乙（拂尘拍头）："看好了——</p>
+                                                                <ul class="list-disc pl-6 mb-6 space-y-2">
+                                                                    <li>算游戏抽卡概率时，会先列十种算法验证</li>
+                                                                    <li>编逃课理由时，能结合你上周的考试成绩</li>
+                                                                    <li>写情书模板？连对方星座运势都给你算上！</li>
+                                                                </ul>
+                                                                
+                                                                <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
+                                                                    <h4 class="font-semibold text-red-700 dark:text-red-400 mb-2">深度思考の代价</h4>
+                                                                    <h5 class="font-medium mb-1">慢工出细活模式：</h5>
+                                                                    <ul class="list-disc pl-6 mb-4 space-y-1">
+                                                                        <li>像老妈炖老火汤："咕嘟咕嘟"慢慢熬</li>
+                                                                        <li>优势：写情书能自动避开你所有黑历史</li>
+                                                                        <li>缺点：等它生成《我的世界》模组代码，敖丙都能通关三次了</li>
+                                                                    </ul>
+                                                                    
+                                                                    <h5 class="font-medium mb-1">速攻模式（限量供应）：</h5>
+                                                                    <ul class="list-disc pl-6 space-y-1">
+                                                                        <li>像自动辣条贩卖机："哐当"秒出答案</li>
+                                                                        <li>适用：查作业答案/生成表情包/算泡面热量</li>
+                                                                        <li>警告：复杂问题会变成"建议重新提问"</li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Chapter 3 -->
+                                                    <div class="chapter-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                                                        <button class="chapter-toggle w-full px-6 py-4 flex justify-between items-center focus:outline-none">
+                                                            <div class="flex items-center">
+                                                                <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 mr-4">
+                                                                    <span class="font-bold">3</span>
+                                                                </div>
+                                                                <h3 class="text-xl font-semibold">这样使唤AI最得劲！</h3>
+                                                            </div>
+                                                            <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                                                        </button>
+                                                        <div class="chapter-content hidden px-6 pb-6">
+                                                            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                                                <p class="mb-4">哪吒咬着笔杆："这堆破需求咋个说人话嘛？！"<br>
+                                                                太乙真人（啃着辣条）："莫急~为师用烧烤摊经济学给你摆明白！"</p>
+                                                                
+                                                                <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 mb-6">
+                                                                    <h4 class="font-semibold text-green-700 dark:text-green-400 mb-2">五大需求の烧烤摊版</h4>
+                                                                    <ol class="list-decimal pl-6 space-y-3">
+                                                                        <li>
+                                                                            <span class="font-medium">决策需求 → 选烤肠or鸡翅？</span>
+                                                                            <p class="text-sm mt-1">"小爷兜里20块，要买3串烤面筋+奶茶，还是5串掌中宝？"</p>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="font-medium">分析需求 → 算辣酱销量</span>
+                                                                            <p class="text-sm mt-1">"上个月卖爆的变态辣鸡翅，是周末卖得多还是学生党买得多？"</p>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="font-medium">创意需求 → 设计新菜单</span>
+                                                                            <p class="text-sm mt-1">"整点赛博朋克风的烧烤套餐，要有火星味调料！"</p>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="font-medium">验证需求 → 试吃新配方</span>
+                                                                            <p class="text-sm mt-1">"老张说新奥尔良味比蜜汁好吃，让他当场盲测十串！"</p>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span class="font-medium">执行需求 → 自动烤串机</span>
+                                                                            <p class="text-sm mt-1">"写个程序控制烤炉，别让鸡翅变成黑炭！"</p>
+                                                                        </li>
+                                                                    </ol>
+                                                                </div>
+                                                                
+                                                                <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 mb-6">
+                                                                    <h4 class="font-semibold text-yellow-700 dark:text-yellow-400 mb-2">太乙真人の点单秘籍</h4>
+                                                                    <p class="mb-2">哪吒举着烤糊的鸡翅："直接说'要好吃的'不行吗？"<br>
+                                                                    太乙的猪猪存钱罐吐出一枚硬币："就像买奶茶——"</p>
+                                                                    
+                                                                    <div class="flex flex-col md:flex-row gap-4 mt-3">
+                                                                        <div class="flex-1 bg-white dark:bg-gray-800 p-3 rounded-lg border border-green-200 dark:border-green-900">
+                                                                            <div class="flex items-center mb-2">
+                                                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                                                                <span class="font-medium">有效点单：</span>
+                                                                            </div>
+                                                                            <p>"四季奶青+波霸+少冰+三分糖"</p>
+                                                                        </div>
+                                                                        <div class="flex-1 bg-white dark:bg-gray-800 p-3 rounded-lg border border-red-200 dark:border-red-900">
+                                                                            <div class="flex items-center mb-2">
+                                                                                <i class="fas fa-times-circle text-red-500 mr-2"></i>
+                                                                                <span class="font-medium">无效点单：</span>
+                                                                            </div>
+                                                                            <p>"随便来杯好喝的"</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="mt-4 p-3 bg-white dark:bg-gray-800 rounded-lg border border-yellow-200 dark:border-yellow-900">
+                                                                        <p class="font-medium text-center">要啥 + 咋做 + 别咋样 = 靠谱答案</p>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4">
+                                                                    <h4 class="font-semibold text-indigo-700 dark:text-indigo-400 mb-2">需求表达烧烤架</h4>
+                                                                    <div class="overflow-x-auto">
+                                                                        <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg">
+                                                                            <thead>
+                                                                                <tr class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-800 dark:text-indigo-200">
+                                                                                    <th class="py-2 px-4 text-left">任务类型</th>
+                                                                                    <th class="py-2 px-4 text-left">正确打开方式</th>
+                                                                                    <th class="py-2 px-4 text-left">作死示范</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                                                                <tr>
+                                                                                    <td class="py-2 px-4">算数题</td>
+                                                                                    <td class="py-2 px-4">"证明烤串优惠券哪种划算"</td>
+                                                                                    <td class="py-2 px-4">"先画坐标系再假设变量..."</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td class="py-2 px-4">编故事</td>
+                                                                                    <td class="py-2 px-4">"写哪吒大战WiFi怪的段子，要带四川话"</td>
+                                                                                    <td class="py-2 px-4">"自由发挥"（得到八股文）</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td class="py-2 px-4">写程序</td>
+                                                                                    <td class="py-2 px-4">"自动计算奶茶店排队时间的代码"</td>
+                                                                                    <td class="py-2 px-4">"先定义变量再写循环..."（程序自爆）</td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Chapter 4 -->
+                                                    <div class="chapter-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                                                        <button class="chapter-toggle w-full px-6 py-4 flex justify-between items-center focus:outline-none">
+                                                            <div class="flex items-center">
+                                                                <div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 mr-4">
+                                                                    <span class="font-bold">4</span>
+                                                                </div>
+                                                                <h3 class="text-xl font-semibold">使唤AI的江湖黑话</h3>
+                                                            </div>
+                                                            <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                                                        </button>
+                                                        <div class="chapter-content hidden px-6 pb-6">
+                                                            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                                                <p class="mb-4">哪吒揪着头发："学个锤子提示语！直接问不就行了？"<br>
+                                                                太乙的猪猪存钱罐"哐当"吐出硬币："就像烧烤——"</p>
+                                                                
+                                                                <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 mb-6">
+                                                                    <h4 class="font-semibold text-purple-700 dark:text-purple-400 mb-2">啥是提示语？</h4>
+                                                                    <p class="mb-2">"就像你喊'老板来20串微辣鸡翅'！"</p>
+                                                                    <ul class="list-disc pl-6 space-y-1">
+                                                                        <li>要啥：20串鸡翅（指令）</li>
+                                                                        <li>背景：老板知道你是常客（上下文）</li>
+                                                                        <li>别搞错：微辣不是变态辣（期望）</li>
+                                                                    </ul>
+                                                                    
+                                                                    <div class="mt-4 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                                                        <p>哪吒挣扎："那直接说'给点吃的'不行吗？！"<br>
+                                                                        太乙甩拂尘："就像你要'冰阔落'——不说清楚，老板可能给你倒热开水！"</p>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="bg-pink-50 dark:bg-pink-900/20 rounded-lg p-4 mb-6">
+                                                                    <h4 class="font-semibold text-pink-700 dark:text-pink-400 mb-2">太乙真人の点AI秘籍</h4>
+                                                                    
+                                                                    <div class="space-y-4 mt-3">
+                                                                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg border border-pink-200 dark:border-pink-900">
+                                                                            <div class="flex items-center mb-2">
+                                                                                <span class="w-6 h-6 rounded-full bg-pink-100 dark:bg-pink-900 text-pink-600 dark:text-pink-400 flex items-center justify-center font-bold mr-2">1</span>
+                                                                                <span class="font-medium">说人话</span>
+                                                                            </div>
+                                                                            <p class="text-sm">"要AI写检讨？就说：'编个逃课理由，要感动陈塘关百姓的！'<br>
+                                                                            别整'请生成300字情感充沛的叙述文本'这种官腔！"</p>
+                                                                        </div>
+                                                                        
+                                                                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg border border-pink-200 dark:border-pink-900">
+                                                                            <div class="flex items-center mb-2">
+                                                                                <span class="w-6 h-6 rounded-full bg-pink-100 dark:bg-pink-900 text-pink-600 dark:text-pink-400 flex items-center justify-center font-bold mr-2">2</span>
+                                                                                <span class="font-medium">会变通</span>
+                                                                            </div>
+                                                                            <p class="text-sm">"就像买奶茶：<br>
+                                                                            '四季春+波霸+少冰+三分糖'（AI秒懂）<br>
+                                                                            '随便来杯好喝的'（等着喝刷锅水吧）"</p>
+                                                                        </div>
+                                                                        
+                                                                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg border border-pink-200 dark:border-pink-900">
+                                                                            <div class="flex items-center mb-2">
+                                                                                <span class="w-6 h-6 rounded-full bg-pink-100 dark:bg-pink-900 text-pink-600 dark:text-pink-400 flex items-center justify-center font-bold mr-2">3</span>
+                                                                                <span class="font-medium">懂规矩</span>
+                                                                            </div>
+                                                                            <p class="text-sm">"让AI算零花钱要说：<br>
+                                                                            '这个月还剩200，皮肤打七折时买，烧烤选周二半价！'<br>
+                                                                            别只说'帮我算算钱'！"</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
+                                                                    <h4 class="font-semibold text-orange-700 dark:text-orange-400 mb-2">三太子の独门心法</h4>
+                                                                    
+                                                                    <div class="space-y-4 mt-3">
+                                                                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg">
+                                                                            <div class="flex items-center mb-2">
+                                                                                <span class="w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold mr-2">1</span>
+                                                                                <span class="font-medium">夹心饼干写法</span>
+                                                                            </div>
+                                                                            <p class="text-sm">正经说明（加上通俗解释）<br>
+                                                                            例如："帮我写个请假条（就是那种看了让班主任心软的）"</p>
+                                                                        </div>
+                                                                        
+                                                                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg">
+                                                                            <div class="flex items-center mb-2">
+                                                                                <span class="w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold mr-2">2</span>
+                                                                                <span class="font-medium">精分对话术</span>
+                                                                            </div>
+                                                                            <p class="text-sm">让AI扮演多个角色对话<br>
+                                                                            例如："设计一段对话：哪吒（想逃课）VS太乙真人（严厉教育）"</p>
+                                                                        </div>
+                                                                        
+                                                                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg">
+                                                                            <div class="flex items-center mb-2">
+                                                                                <span class="w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold mr-2">3</span>
+                                                                                <span class="font-medium">游戏选择法</span>
+                                                                            </div>
+                                                                            <p class="text-sm">设计多个选项让AI分析<br>
+                                                                            例如："分析三种逃课理由哪个最可信：肚子疼/看病/家里有事"</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Chapter 5 -->
+                                                    <div class="chapter-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                                                        <button class="chapter-toggle w-full px-6 py-4 flex justify-between items-center focus:outline-none">
+                                                            <div class="flex items-center">
+                                                                <div class="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center text-yellow-600 dark:text-yellow-400 mr-4">
+                                                                    <span class="font-bold">5</span>
+                                                                </div>
+                                                                <h3 class="text-xl font-semibold">乾坤未央篇——未来展望</h3>
+                                                            </div>
+                                                            <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                                                        </button>
+                                                        <div class="chapter-content hidden px-6 pb-6">
+                                                            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                                                <p class="mb-4">哪吒摔个屁墩："这就完了？！"<br>
+                                                                太乙真人掏出乾坤圈投影：</p>
+                                                                
+                                                                <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 mb-6">
+                                                                    <h4 class="font-semibold text-yellow-700 dark:text-yellow-400 mb-2">未来更新预告</h4>
+                                                                    <p class="mb-2">🐷 "急啥子？这只是1.0版本！下个月更新："</p>
+                                                                    <ul class="list-disc pl-6 space-y-1">
+                                                                        <li>敖丙の冰系AI冷知识</li>
+                                                                        <li>玲珑宝塔の防沉迷秘籍</li>
+                                                                        <li>教你用AI预测辣条价格波动！</li>
+                                                                    </ul>
+                                                                </div>
+                                                                
+                                                                <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
+                                                                    <h4 class="font-semibold text-red-700 dark:text-red-400 mb-2">版本2.0预告</h4>
+                                                                    <ul class="list-disc pl-6 space-y-2">
+                                                                        <li>哪吒大战AI画图（乾坤圈vs数位板）</li>
+                                                                        <li>语音助手调教指南（让AI学四川话）</li>
+                                                                        <li>游戏外挂生存手册（太乙真人监修版）</li>
+                                                                    </ul>
+                                                                    
+                                                                    <div class="mt-4 p-3 bg-white dark:bg-gray-800 rounded-lg text-center">
+                                                                        <p>哪吒咬破手指写血书："催更请扫码→"<br>
+                                                                        （火尖枪在地上刻出二维码残影）<br>
+                                                                        #DeepSeek修仙委员会#<br>
+                                                                        （小爷的修炼日记持续更新中...）</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                
+                                    <!-- CTA section -->
+                                    <section class="py-16 bg-gradient-to-br from-primary-600 to-secondary-600 text-white">
+                                        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                                            <div class="max-w-3xl mx-auto text-center">
+                                                <h2 class="text-3xl font-bold mb-6">准备好开始你的AI修炼之旅了吗？</h2>
+                                                <p class="text-xl mb-8">立即访问DeepSeek，体验国产开源大模型的强大能力！</p>
+                                                <a href="https://chat.deepseek.com" target="_blank" class="btn inline-flex items-center bg-white text-primary-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-medium shadow-lg">
+                                                    <i class="fas fa-rocket mr-2"></i>
+                                                    立即开始
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </section>
+                                
+                                    <!-- Author section -->
+                                    <section id="author" class="py-16 bg-white dark:bg-gray-900">
+                                        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                                            <div class="max-w-3xl mx-auto">
+                                                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+                                                    <div class="p-6">
+                                                        <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+                                                            <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-3xl font-bold">
+                                                                AI
+                                                            </div>
+                                                            <div class="flex-1 text-center md:text-left">
+                                                                <h3 class="text-2xl font-bold mb-2">AI教程作者</h3>
+                                                                <p class="text-gray-600 dark:text-gray-400 mb-4">DeepSeek爱好者 | AI内容创作者 | 技术传播者</p>
+                                                                <div class="flex justify-center md:justify-start space-x-4 mb-6">
+                                                                    <a href="https://twitter.com/deepseek_ai" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                                                                        <i class="fab fa-twitter text-xl"></i>
+                                                                    </a>
+                                                                    <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                                                                        <i class="fab fa-github text-xl"></i>
+                                                                    </a>
+                                                                    <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                                                                        <i class="fab fa-linkedin text-xl"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <p class="text-gray-700 dark:text-gray-300">热爱探索AI技术的应用与创新，致力于用通俗易懂的方式传播AI知识，让更多人能够轻松上手并充分利用AI工具提升效率。</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                
+                                    <!-- Footer -->
+                                    <footer class="py-8 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                                        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                                            <div class="flex flex-col md:flex-row justify-between items-center">
+                                                <div class="mb-4 md:mb-0">
+                                                    <div class="flex items-center">
+                                                        <i class="fas fa-fire text-red-500 text-xl mr-2"></i>
+                                                        <span class="font-bold text-lg">DeepSeek从入门到精通</span>
+                                                    </div>
+                                                    <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">© 2025 DeepSeek修仙委员会. 保留所有权利.</p>
+                                                </div>
+                                                <div class="flex space-x-6">
+                                                    <a href="https://chat.deepseek.com" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                                                        <i class="fas fa-external-link-alt mr-1"></i>
+                                                        DeepSeek官网
+                                                    </a>
+                                                    <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                                                        <i class="fas fa-book mr-1"></i>
+                                                        更多教程
+                                                    </a>
+                                                    <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                                                        <i class="fas fa-envelope mr-1"></i>
+                                                        联系我们
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </footer>
+                                
+                                    <!-- JavaScript -->
+                                    <script>
+                                        // Theme toggle functionality
+                                        const themeToggle = document.getElementById('theme-toggle');
+                                        const html = document.documentElement;
+                                        
+                                        // Check for saved theme preference or use system preference
+                                        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                                            html.classList.add('dark');
+                                        } else {
+                                            html.classList.remove('dark');
+                                        }
+                                        
+                                        // Toggle theme
+                                        themeToggle.addEventListener('click', () => {
+                                            html.classList.toggle('dark');
+                                            
+                                            // Save preference
+                                            if (html.classList.contains('dark')) {
+                                                localStorage.theme = 'dark';
+                                            } else {
+                                                localStorage.theme = 'light';
+                                            }
+                                        });
+                                        
+                                        // Mobile menu toggle
+                                        const mobileMenuButton = document.getElementById('mobile-menu-button');
+                                        const mobileMenu = document.getElementById('mobile-menu');
+                                        
+                                        mobileMenuButton.addEventListener('click', () => {
+                                            mobileMenu.classList.toggle('hidden');
+                                        });
+                                        
+                                        // Chapter accordion functionality
+                                        const chapterToggles = document.querySelectorAll('.chapter-toggle');
+                                        
+                                        chapterToggles.forEach(toggle => {
+                                            toggle.addEventListener('click', () => {
+                                                const content = toggle.nextElementSibling;
+                                                const icon = toggle.querySelector('.fa-chevron-down');
+                                                
+                                                // Toggle content visibility
+                                                content.classList.toggle('hidden');
+                                                
+                                                // Rotate icon
+                                                if (content.classList.contains('hidden')) {
+                                                    icon.style.transform = 'rotate(0deg)';
+                                                } else {
+                                                    icon.style.transform = 'rotate(180deg)';
+                                                }
+                                            });
+                                        });
+                                        
+                                        // Copy button functionality for code blocks
+                                        const copyButtons = document.querySelectorAll('.copy-btn');
+                                        
+                                        copyButtons.forEach(button => {
+                                            button.addEventListener('click', () => {
+                                                const codeBlock = button.parentElement.querySelector('pre');
+                                                navigator.clipboard.writeText(codeBlock.textContent);
+                                                
+                                                // Show feedback
+                                                const originalIcon = button.innerHTML;
+                                                button.innerHTML = '<i class="fas fa-check"></i>';
+                                                
+                                                setTimeout(() => {
+                                                    button.innerHTML = originalIcon;
+                                                }, 2000);
+                                            });
+                                        });
+                                        
+                                        // Lazy loading for content
+                                        document.addEventListener('DOMContentLoaded', () => {
+                                            const fadeElements = document.querySelectorAll('section > div');
+                                            
+                                            const observer = new IntersectionObserver((entries) => {
+                                                entries.forEach(entry => {
+                                                    if (entry.isIntersecting) {
+                                                        entry.target.classList.add('fade-in');
+                                                        observer.unobserve(entry.target);
+                                                    }
+                                                });
+                                            }, { threshold: 0.1 });
+                                            
+                                            fadeElements.forEach(element => {
+                                                observer.observe(element);
+                                            });
+                                        });
+                                        
+                                        // Smooth scrolling for anchor links
+                                        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                                            anchor.addEventListener('click', function(e) {
+                                                e.preventDefault();
+                                                
+                                                const targetId = this.getAttribute('href');
+                                                const targetElement = document.querySelector(targetId);
+                                                
+                                                if (targetElement) {
+                                                    // Close mobile menu if open
+                                                    mobileMenu.classList.add('hidden');
+                                                    
+                                                    // Scroll to target
+                                                    targetElement.scrollIntoView({
+                                                        behavior: 'smooth',
+                                                        block: 'start'
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                </body>
+                                </html>
